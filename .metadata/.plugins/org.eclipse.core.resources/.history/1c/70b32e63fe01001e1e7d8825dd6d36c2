@@ -1,0 +1,5 @@
+package org.jsp.adminhospital.config;
+
+public class HospitalConfig {
+
+}

@@ -1,0 +1,5 @@
+package org.jsp.foodorder.config;
+
+public class UserConfig {
+
+}

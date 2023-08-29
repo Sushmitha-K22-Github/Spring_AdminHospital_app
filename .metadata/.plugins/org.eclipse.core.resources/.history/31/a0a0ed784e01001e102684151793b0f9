@@ -1,0 +1,19 @@
+package org.jsp.foodorder.dao;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
+import org.jsp.foodorder.dto.User;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class UserDao {
+EntityManager m;
+public User saveUser(User u) {
+	EntityTransaction t=m.getTransaction();
+	m.persist(u);
+	t.begin();
+	t.commit();
+	return u;
+}
+}

@@ -1,0 +1,67 @@
+package org.jsp.controller;
+
+
+import org.jsp.foodorder.dao.UserDao;
+import org.jsp.foodorder.dto.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@SessionAttributes(names= {"u"})
+public class UserFoodController {
+	@Autowired
+private UserDao udao;
+	
+	@PostMapping("/save")
+	public ModelAndView saveUser(@ModelAttribute User u, ModelAndView view) {
+		view.setViewName("print.jsp");
+		u=udao.saveUser(u);
+		
+		view.addObject("msg", "user saved with ID:"+u.getId());
+		return view;
+	}
+	@PostMapping("/login")
+	public ModelAndView login(@RequestParam long phone,@RequestParam String password) {
+		User u=udao.verifyUser(phone, password);
+		ModelAndView view =new 	ModelAndView();
+		if(u!=null) {
+			view.addObject("u", u);
+			view.setViewName("home.jsp");
+			return view;
+		}else {
+			view.addObject("msg", "Invalid phone or password");
+			view.setViewName("login.jsp");
+			return view;
+		}
+	}
+	@PostMapping("/update")
+	public ModelAndView updateUser(@ModelAttribute User u,ModelAndView view) {
+		view.addObject("u",u);
+		u=udao.updateUser(u);
+		view.addObject("msg", "user updated with ID:"+u.getId());
+		view.setViewName("print.jsp");
+		return view;
+	}
+	
+	@RequestMapping("/delete")
+	public ModelAndView deleteUser(@RequestParam int id, ModelAndView view) {
+		boolean isDeleted=dao.deleteUser(id);
+		if(isDeleted) {
+			view.setViewName("login.jsp");
+			view.addObject("msg", "your account is deleted");
+			return view;
+		}else {
+			view.setViewName("login.jsp");
+			view.addObject("msg", "you must login to delete");
+			return view;
+		}
+		
+	}
+	
+}
+

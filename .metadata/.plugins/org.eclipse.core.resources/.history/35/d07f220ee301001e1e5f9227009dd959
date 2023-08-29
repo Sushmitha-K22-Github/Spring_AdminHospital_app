@@ -1,0 +1,43 @@
+package org.jsp.controller;
+
+
+import org.jsp.foodorder.dao.UserDao;
+import org.jsp.foodorder.dto.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@SessionAttributes(names= {"u"})
+public class UserFoodController {
+	@Autowired
+private UserDao udao;
+	
+	@PostMapping("/save")
+	public ModelAndView saveUser(@ModelAttribute User u, ModelAndView view) {
+		view.setViewName("print.jsp");
+		u=udao.saveUser(u);
+		
+		view.addObject("msg", "user saved with ID:"+u.getId());
+		return view;
+	}
+	@PostMapping("/login")
+	public ModelAndView login(@RequestParam long phone,@RequestParam String password) {
+		User u=udao.verifyUser(phone, password);
+		ModelAndView view =new 	ModelAndView();
+		if(u!=null) {
+			view.addObject("u", u);
+			view.setViewName("home.jsp");
+			return view;
+		}else {
+			view.addObject("msg", "Invalid phone or password");
+			view.setViewName("login.jsp");
+			return view;
+		}
+	}
+}
+

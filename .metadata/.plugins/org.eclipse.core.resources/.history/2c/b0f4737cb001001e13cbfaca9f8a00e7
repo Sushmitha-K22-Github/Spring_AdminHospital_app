@@ -1,0 +1,40 @@
+package org.jsp.foodorder.dao;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
+import org.jsp.foodorder.dto.FoodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class FoodorderDao {
+	@Autowired
+EntityManager m;
+	public FoodOrder saveFoodOrder(FoodOrder fd) {
+		EntityTransaction t=m.getTransaction();
+		m.persist(fd);
+		t.begin();
+		t.commit();
+		return fd;
+	}
+	public FoodOrder updateFoodOrder(FoodOrder fd) {
+		EntityTransaction t=m.getTransaction();
+		m.merge(fd);
+		t.begin();
+		t.commit();
+		return fd;
+	}
+	public boolean deleteFoodOrder(int id) {
+		EntityTransaction t=m.getTransaction();
+		FoodOrder fd=m.find(FoodOrder.class,id);
+		if(fd!=null) {
+			m.remove(fd);
+		   t.begin();
+		   t.commit();
+		   return true;
+		}
+		return false;
+	}
+	
+}

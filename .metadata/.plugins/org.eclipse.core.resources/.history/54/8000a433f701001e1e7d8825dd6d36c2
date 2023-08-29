@@ -1,0 +1,5 @@
+package org.jsp.admin.dto;
+
+public class Admin {
+
+}

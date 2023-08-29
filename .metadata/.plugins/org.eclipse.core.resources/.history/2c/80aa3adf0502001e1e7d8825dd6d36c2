@@ -1,0 +1,65 @@
+package org.jsp.adminhospital.controller;
+
+
+import org.jsp.adminhospital.dao.AdminDao;
+import org.jsp.adminhospital.dto.Admin;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@SessionAttributes(names= {"a"})
+public class AdminController {
+	@Autowired
+	private AdminDao adao;
+		
+		@PostMapping("/save")
+		public ModelAndView saveAdmin(@ModelAttribute Admin a, ModelAndView view) {
+			view.setViewName("print.jsp");
+			a=adao.saveAdmin(a);
+			view.addObject("msg", "admin saved with ID:"+a.getId());
+			return view;
+		}
+		@PostMapping("/login")
+		public ModelAndView login(@RequestParam long phone,@RequestParam String password) {
+		Admin a=adao.verifyAdmin(phone, password);
+			ModelAndView view =new 	ModelAndView();
+			if(a!=null) {
+				view.addObject("a", a);
+				view.setViewName("home.jsp");
+				return view;
+			}else {
+				view.addObject("msg", "Invalid phone or password");
+				view.setViewName("login.jsp");
+				return view;
+			}
+		}
+		@PostMapping("/update")
+		public ModelAndView updateAdmin(@ModelAttribute Admin a,ModelAndView view) {
+			view.addObject("a",a);
+			a=adao.updateAdmin(a);
+			view.addObject("msg", "admin updated with ID:"+a.getId());
+			view.setViewName("print.jsp");
+			return view;
+		}
+		
+		@PostMapping("/delete")
+		public ModelAndView deleteAdmin(@RequestParam int id, ModelAndView view) {
+			boolean isDeleted=adao.deleteAdmin(id);
+			if(isDeleted) {
+				view.setViewName("login.jsp");
+				view.addObject("msg", "your account is deleted");
+				return view;
+			}else {
+				view.setViewName("login.jsp");
+				view.addObject("msg", "you must login to delete");
+				return view;
+			}
+			
+		}
+}
